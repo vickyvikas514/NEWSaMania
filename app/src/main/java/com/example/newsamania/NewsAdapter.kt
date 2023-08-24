@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
@@ -33,5 +34,8 @@ class NewsAdapter(val context: Context,val articles : List<Article>):Adapter<New
         holder.newsTitle.text = article.title
         holder.newsDescription.text = article.description
         Glide.with(context).load(article.urlToImage).into(holder.newsImage)
+        holder.itemView.setOnClickListener{
+            Toast.makeText(context,"We are currently working on it",Toast.LENGTH_SHORT).show()
+        }
     }
 }
