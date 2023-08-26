@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ProgressBar
 import androidx.core.graphics.green
 import com.example.newsamania.databinding.ActivityDetailBinding
 
@@ -21,6 +22,8 @@ class DetailActivity : AppCompatActivity() {
             detailwebView.webViewClient = object : WebViewClient(){
                 override fun onPageFinished(view: WebView?, url: String?) {
                     super.onPageFinished(view, url)
+                    val progressBar = findViewById<ProgressBar>(R.id.progressBar)
+                    progressBar.visibility = View.GONE
                   detailwebView.visibility = View.VISIBLE
                 }
             }
