@@ -136,7 +136,7 @@ class StackLayoutManager(
         return itemCount != 0 && horizontalLayout
     }
 
-    private fun scroll(
+     fun scroll(
         thisMuch: Float,
         recycler: Recycler,
         state: RecyclerView.State
@@ -681,4 +681,13 @@ class StackLayoutManager(
             return max(0f, min(1f, value))
         }
     }
+    private var itemChangedListener: ItemChangedListener? = null
+
+    interface ItemChangedListener {
+        fun onItemChanged(position: Int)
+    }
+    fun setItemChangedListener(listener: ItemChangedListener) {
+        itemChangedListener = listener
+    }
+
 }

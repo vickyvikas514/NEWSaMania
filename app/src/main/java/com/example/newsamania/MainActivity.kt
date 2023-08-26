@@ -17,7 +17,9 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var adapter: NewsAdapter
     private var articles = mutableListOf<Article>()
-
+    var pageNum :Int = 1
+    var totalresult = -1
+    val TAG = "vickyvikas515"
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -27,18 +29,32 @@ class MainActivity : AppCompatActivity() {
         val newslist = findViewById<RecyclerView>(R.id.newslist)
         newslist.adapter = adapter
        // newslist.layoutManager = LinearLayoutManager(this@MainActivity)
-        newslist.layoutManager = StackLayoutManager(false,true,0.5f)
+        val layoutManager = StackLayoutManager(false,true,1.5f)
+        newslist.layoutManager = layoutManager
+        layoutManager.setItemChangedListener(object:StackLayoutManager.ItemChangedListener{
+            override fun onItemChanged(position: Int) {
+                Log.d(TAG,"First Visible Item - ${layoutManager.findFirstVisibleItemPosition()}")
+                Log.d(TAG,"Total Count ${layoutManager.itemCount}")
+            }
+        })
+
+
+
+
+
 
 
         getNews()
+
     }
     private fun getNews(){
-        val news = NewsService.newsInctance.getHeadline("in",2)
+        val news = NewsService.newsInctance.getHeadline("in",pageNum)
         news.enqueue(object :Callback<News>{
             override fun onResponse(call: Call<News>, response: Response<News>) {
                 val news = response.body()
                 if(news != null){
                     Log.d("vickyvikas514",news.toString())
+                    totalresult = news.totalResults
                     articles.addAll(news.articles)
                     adapter.notifyDataSetChanged()
 
