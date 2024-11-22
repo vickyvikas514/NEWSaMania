@@ -1,71 +1,43 @@
 package com.example.newsamania
 
-import android.os.Build.VERSION_CODES.N
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import library.StackLayoutManager
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
+import androidx.fragment.app.Fragment
+import com.example.newsamania.databinding.ActivityMainBinding
+import com.example.newsamania.fragments.BusinessFragment
+import com.example.newsamania.fragments.EntertainmentFragment
+import com.example.newsamania.fragments.HealthFragment
+import com.example.newsamania.fragments.HomeFragment
+import com.example.newsamania.fragments.ScienceFragment
+import com.example.newsamania.fragments.SearchFragment
+import com.example.newsamania.fragments.SportsFragment
+import com.example.newsamania.fragments.TechnologyFragment
+import com.sun.khobrakhobor.adapter.ViewPagerAdapter
 
 
 class MainActivity : AppCompatActivity() {
-
-    lateinit var adapter: NewsAdapter
-    private var articles = mutableListOf<Article>()
-    var pageNum :Int = 1
-    var totalresult = -1
-    val TAG = "vickyvikas515"
-
+    private lateinit var binding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        adapter = NewsAdapter(this@MainActivity, articles)
-        val newslist = findViewById<RecyclerView>(R.id.newslist)
-        newslist.adapter = adapter
-       // newslist.layoutManager = LinearLayoutManager(this@MainActivity)
-        val layoutManager = StackLayoutManager(false,true,1.5f)
-        newslist.layoutManager = layoutManager
-        layoutManager.setItemChangedListener(object:StackLayoutManager.ItemChangedListener{
-            override fun onItemChanged(position: Int) {
-                Log.d(TAG,"First Visible Item - ${layoutManager.findFirstVisibleItemPosition()}")
-                Log.d(TAG,"Total Count ${layoutManager.itemCount}")
-            }
-        })
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val fragmentArrayList = ArrayList<Fragment>()
 
+        fragmentArrayList.add(HomeFragment())
+        fragmentArrayList.add(BusinessFragment())
+        fragmentArrayList.add(SportsFragment())
+        fragmentArrayList.add(HealthFragment())
+        fragmentArrayList.add(ScienceFragment())
+        fragmentArrayList.add(TechnologyFragment())
+        fragmentArrayList.add(EntertainmentFragment())
+        fragmentArrayList.add(SearchFragment())
 
+        val adapter = ViewPagerAdapter(this, supportFragmentManager, fragmentArrayList)
+        binding.fabSearch.setOnClickListener {
+            binding.fragmentcontainer.currentItem = 8
+        }
 
-
-
-
-
-        getNews()
-
-    }
-    private fun getNews(){
-        val news = NewsService.newsInctance.getHeadline("in",pageNum)
-        news.enqueue(object :Callback<News>{
-            override fun onResponse(call: Call<News>, response: Response<News>) {
-                val news = response.body()
-                if(news != null){
-                    Log.d("vickyvikas514",news.toString())
-                    totalresult = news.totalResults
-                    articles.addAll(news.articles)
-                    adapter.notifyDataSetChanged()
-
-
-                }
-            }
-
-            override fun onFailure(call: Call<News>, t: Throwable) {
-                Log.d("vickyvikas514","Error in fetching News",t)
-
-            }
-        })
+        binding.fragmentcontainer.adapter = adapter
+        binding.include.setupWithViewPager(binding.fragmentcontainer)
     }
 }
